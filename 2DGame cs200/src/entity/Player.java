@@ -2,6 +2,9 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import objects.OBJ_Shield;
+import objects.OBJ_Sword;
+import objects.SuperObject;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,7 +38,7 @@ public class Player extends Entity{
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
-        solidArea = new Rectangle(8, 16, 32, 32);
+        solidArea = new Rectangle(32, 48, 48, 48);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
@@ -45,7 +48,7 @@ public class Player extends Entity{
     public void setDefaultValues () {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 21;
-        speed = 5;
+        speed = 10;
         direction = "down";
     }
 
@@ -179,13 +182,23 @@ public class Player extends Entity{
                     }
                     break;
                 case "Shield":
-                    if (hasShield == 0) {
+                    if (hasSword == 0) {
                         gp.ui.showMessage("Shield Equipped");
-                        String playerMessage = "Shield Equipped";
                         hasShield++;
                         gp.obj[i] = null;
                         break;
-                    } break;
+                    } else {
+                        if (hasSword == 1) {
+                            gp.ui.showMessage("Shield Equipped, Sword Dropped");
+                            hasShield++;
+                            hasSword--;
+                            gp.obj[i] = null;
+                            gp.obj[7] = new OBJ_Sword();
+                            gp.obj[7].worldX = 32 * gp.tileSize;
+                            gp.obj[7].worldY = 6 * gp.tileSize;
+                            break;
+                        }
+                    }
                 case "SpeedBoots":
                     //if (hasSpeetBoots == 0) {
                     //    gp.obj[i]=null;
@@ -195,6 +208,30 @@ public class Player extends Entity{
                     //}
                     gp.ui.gameFinished = true;
                     break;
+                case "Sword":
+                    if (hasShield == 1) {
+                        gp.ui.showMessage("Sword Equipped, Shield Dropped");
+                        gp.obj[i]=null;
+                        gp.obj[5] = new OBJ_Shield();
+                        gp.obj[5].worldX = 28*gp.tileSize;
+                        gp.obj[5].worldY = 6*gp.tileSize;
+                        hasSword++;
+                        hasShield--;
+
+                    }
+                    else {
+                        gp.ui.showMessage("Sword Equipped");
+                        gp.obj[i]=null;
+                        hasSword++;
+
+                    }
+                    for (SuperObject z : gp.obj) {
+                        System.out.println(z);
+                    }
+                    break;
+
+
+
 
 
 
