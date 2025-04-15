@@ -38,7 +38,8 @@ public class Player extends Entity{
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
-        solidArea = new Rectangle(32, 48, 48, 48);
+        solidArea = new Rectangle(worldX+41, worldY+52, 12, 28);
+
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
@@ -48,7 +49,7 @@ public class Player extends Entity{
     public void setDefaultValues () {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 21;
-        speed = 10;
+        speed = 2;
         direction = "down";
     }
 
@@ -75,22 +76,36 @@ public class Player extends Entity{
     public void update(){
         if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
 
-
-            if (keyH.upPressed == true) {
+            if (keyH.upPressed == true && keyH.rightPressed == true) {
+                direction = "up-right";
+            }
+            else if (keyH.upPressed && keyH.leftPressed) {
+                direction = "up-left";
+            }
+            else if (keyH.downPressed && keyH.leftPressed) {
+                direction = "down-left";
+            }
+            else if (keyH.downPressed && keyH.rightPressed) {
+                direction = "down-right";
+            }
+            else if (keyH.upPressed == true) {
                 direction = "up";
+                if(keyH.rightPressed) {
+                    direction = "up-right";
+                }
 
             }
-            if (keyH.downPressed == true) {
+            else if (keyH.downPressed == true) {
                 direction = "down";
 
 
             }
-            if (keyH.leftPressed == true) {
+            else if (keyH.leftPressed == true) {
                 direction = "left";
 
 
             }
-            if (keyH.rightPressed == true) {
+            else if (keyH.rightPressed == true) {
                 direction = "right";
 
             }
@@ -106,6 +121,22 @@ public class Player extends Entity{
             // if collision is false player can move
             if (!collisionOn) {
                 switch(direction) {
+                    case "up-right":
+                        worldY = worldY - speed;
+                        worldX = worldX + speed;
+                        break;
+                    case "up-left":
+                        worldY = worldY - speed;
+                        worldX = worldX - speed;
+                        break;
+                    case "down-left":
+                        worldY = worldY + speed;
+                        worldX = worldX - speed;
+                        break;
+                    case "down-right":
+                        worldY = worldY + speed;
+                        worldX = worldX + speed;
+                        break;
                     case "up":
                         worldY = worldY - speed;
                         break;
@@ -151,7 +182,7 @@ public class Player extends Entity{
                         gp.ui.showMessage("You Used A Key To Open A Chest");
                         if(hasSword == 0) {
                             hasSword++;
-                            gp.ui.showMessage("Sword Found");
+                            gp.ui.showMessage("Chest Opened");
                         }
                         else if (hasSword == 1) {
                             hasStrengthPotion++;
@@ -170,7 +201,7 @@ public class Player extends Entity{
                     }
                     else {
                         gp.ui.showMessage("Missing Key");
-                        }
+                    }
                     break;
                 case "HealPotion":
                     if (healthPoints != 10) {
@@ -200,13 +231,13 @@ public class Player extends Entity{
                         }
                     }
                 case "SpeedBoots":
-                    //if (hasSpeetBoots == 0) {
-                    //    gp.obj[i]=null;
-                    //    gp.ui.showMessage("Speed Increase");
-                    //    speed = 3;
-                    //    break;
-                    //}
-                    gp.ui.gameFinished = true;
+                    if (hasSpeetBoots == 0) {
+                        gp.obj[i]=null;
+                        gp.ui.showMessage("Speed Increase");
+                        speed = 3;
+                        break;
+                    }
+                    //gp.ui.gameFinished = true;
                     break;
                 case "Sword":
                     if (hasShield == 1) {
@@ -241,13 +272,43 @@ public class Player extends Entity{
     }
 
     public void draw(Graphics2D g2){
-        //g2.setColor(Color.white);
 
-        //g2.fillRect(x, y, gp.tileSize, gp.tileSize);
 
         BufferedImage image = null;
 
         switch(direction){
+            case "up-right":
+                if (spriteNum == 1) {
+                    image = right1;
+                }
+                if (spriteNum == 2) {
+                    image = right2;
+                }
+                break;
+            case "up-left":
+                if (spriteNum == 1) {
+                    image = left1;
+                }
+                if (spriteNum == 2) {
+                    image = left2;
+                }
+                break;
+            case "down-right":
+                if (spriteNum == 1) {
+                    image = right1;
+                }
+                if (spriteNum == 2) {
+                    image = right2;
+                }
+                break;
+            case "down-left":
+                if (spriteNum == 1) {
+                    image = left1;
+                }
+                if (spriteNum == 2) {
+                    image = left2;
+                }
+                break;
             case "up":
                 if(spriteNum == 1) {
                     image = up1;
@@ -282,7 +343,11 @@ public class Player extends Entity{
                 break;
 
         }
-
+        //g2.fillRect(10,10,8,8);
+        //g2.drawRect(screenX,screenY,gp.tileSize,gp.tileSize);
         g2.drawImage(image,screenX,screenY,gp.tileSize*2,gp.tileSize*2, null);
+        g2.setColor(Color.YELLOW);
+        g2.drawRect(screenX+41, screenY+52, 12, 28);
+
     }
 }
